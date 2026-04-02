@@ -70,7 +70,6 @@ export function EditorCanvas() {
     autoLayout,
     searchQuery,
     setSearchQuery,
-    setRingCount,
     assignNodeToRing,
     connectionSourceId,
     startConnection,

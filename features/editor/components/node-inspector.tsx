@@ -82,7 +82,7 @@ export function NodeInspector({
       </div>
 
       {mode === "viewer" ? (
-        <div className="space-y-4">
+        <div className="space-y-6">
           <div>
             <h4 className="text-2xl font-semibold leading-tight text-neutral-100">{node.title}</h4>
             <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-neutral-400">
@@ -103,6 +103,26 @@ export function NodeInspector({
             <span className="rounded-full bg-neutral-800 px-2.5 py-1 text-neutral-200">
               Importance {node.importance}/10
             </span>
+          </div>
+
+          {/* Courses Section */}
+          <div className="border-t border-neutral-800 pt-4">
+            <h5 className="mb-3 text-sm font-medium text-neutral-300">Related Courses</h5>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { title: "Getting Started with React", duration: "2h 30m" },
+                { title: "Advanced State Management", duration: "4h 15m" },
+                { title: "Performance Optimization", duration: "3h 45m" },
+              ].map((course, idx) => (
+                <div key={idx} className="flex flex-col overflow-hidden rounded-lg border border-neutral-700 bg-neutral-900/50 transition-all hover:border-neutral-600 hover:bg-neutral-900">
+                  <div className="h-24 w-full bg-neutral-800" />
+                  <div className="flex flex-1 flex-col justify-between p-2">
+                    <p className="line-clamp-2 text-xs font-medium text-neutral-200">{course.title}</p>
+                    <p className="text-xs text-neutral-400">{course.duration}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       ) : (

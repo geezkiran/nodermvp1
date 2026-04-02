@@ -37,7 +37,7 @@ function SearchBox({ collapsed }: { collapsed: boolean }) {
       style={{ transitionTimingFunction: easing }}
     >
       <div
-        className="relative flex h-9 w-full items-center rounded-lg bg-black pl-2 transition-all duration-300"
+        className="relative flex h-9 w-full items-center rounded-lg bg-black/70 pl-2 transition-all duration-300"
         style={{ transitionTimingFunction: easing }}
       >
         <div className="flex size-8 items-center justify-center p-0">
@@ -47,7 +47,7 @@ function SearchBox({ collapsed }: { collapsed: boolean }) {
           value={value}
           onChange={(event) => setValue(event.target.value)}
           placeholder="Search..."
-          className="w-full bg-transparent pr-0 text-sm text-neutral-50 outline-none placeholder:text-neutral-400"
+          className="w-full bg-black/70 pr-0 text-sm text-neutral-50 outline-none placeholder:text-neutral-400"
         />
         <div
           aria-hidden
@@ -281,10 +281,10 @@ function SingleSidebar({
           ))}
         </div>
 
-        <div className={`mt-4 w-full space-y-3 overflow-y-auto ${collapsed ? "hidden" : ""}`}>
+        <div className={`mt-4 w-full space-y-2 overflow-y-auto ${collapsed ? "hidden" : ""}`}>
           {content.groups.map((group) => (
             <div key={group.title} className="w-full">
-              <h3 className="mb-1.5 px-3 text-sm font-normal text-neutral-400">{group.title}</h3>
+              <h3 className="mb-1 px-3 text-sm font-normal text-neutral-400">{group.title}</h3>
               <div className="space-y-0.5">
                 {group.items.map((item) => {
                   const key = `${group.title}-${item.label}`;
@@ -357,7 +357,7 @@ export function AppSidebar() {
       </div>
 
       <div className="flex w-full items-center justify-center px-6 md:hidden">
-        <div className="rounded-lg border border-neutral-700 bg-black/80 px-4 py-3 text-center text-sm text-neutral-100">
+        <div className="rounded-lg border border-neutral-700 bg-black/100 px-4 py-3 text-center text-sm text-neutral-100">
           Use desktop to continue viewing.
         </div>
       </div>
