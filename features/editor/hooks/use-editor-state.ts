@@ -15,14 +15,28 @@ type UpdateNodeInput = {
 };
 
 export function useEditorState() {
-  const [map, setMap] = useState<OrbitMap>(() => loadMap() ?? createDefaultMap());
+  const [map, setMap] = useState<OrbitMap>(() => createDefaultMap());
+  const [hasHydrated, setHasHydrated] = useState(false);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [connectionSourceId, setConnectionSourceId] = useState<string | null>(null);
 
   useEffect(() => {
+    const stored = loadMap();
+    if (stored) {
+      setMap(stored);
+    }
+
+    setHasHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hasHydrated) {
+      return;
+    }
+
     saveMap(map);
-  }, [map]);
+  }, [hasHydrated, map]);
 
   const selectedNode = useMemo(
     () => map.nodes.find((node) => node.id === selectedNodeId) ?? null,

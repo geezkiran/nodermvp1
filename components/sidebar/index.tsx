@@ -194,7 +194,7 @@ function SingleSidebar({
         style={{ transitionTimingFunction: easing }}
       >
         <div
-          className={`mb-4 flex h-10 items-center ${collapsed ? "justify-center" : "justify-between"}`}
+          className={`flex h-10 items-center ${collapsed ? "mb-10 justify-center" : "mb-5 justify-between"}`}
         >
           <div className="flex size-10 shrink-0 items-center justify-center rounded-lg">
             <Image src="/assets/logoiconmob.png" alt="Logo" width={26} height={26} priority />
