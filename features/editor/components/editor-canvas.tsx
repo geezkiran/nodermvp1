@@ -7,11 +7,12 @@ import {
   PanelLeft,
   PanelRight,
   Plus,
-  Sparkles,
+  Grid2x2Check,
   ZoomIn,
   ZoomOut,
 } from "lucide-react";
 
+import Dock from "@/components/ui/dock";
 import { useEditorState } from "../hooks/use-editor-state";
 import { usePanZoom } from "../hooks/use-pan-zoom";
 import { getRingCompletion, getZoomVisualConfig } from "../services/orbit-layout";
@@ -45,35 +46,6 @@ function getOrbitColor(index: number, totalRings: number) {
     stroke: `hsla(${hue}, 40%, 62%, 0.2)`,
     label: `hsla(${hue}, 40%, 72%, 0.38)`,
   };
-}
-
-function ToolButton({
-  label,
-  onClick,
-  disabled,
-  active,
-  children,
-}: {
-  label: string;
-  onClick: () => void;
-  disabled?: boolean;
-  active?: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      title={label}
-      aria-label={label}
-      className={`flex size-10 items-center justify-center rounded-lg text-neutral-200 transition-colors hover:text-white disabled:opacity-40 ${
-        active ? "text-white" : ""
-      }`}
-    >
-      {children}
-    </button>
-  );
 }
 
 export function EditorCanvas() {
@@ -345,53 +317,24 @@ export function EditorCanvas() {
             </button>
           </div>
 
-          <div className="pointer-events-auto fixed bottom-4 left-1/2 z-30 flex -translate-x-1/2 items-center gap-2 rounded-2xl border border-white/10 bg-black/20 p-2 shadow-[0_8px_30px_rgba(0,0,0,0.35)] backdrop-blur-sm ">
-            <div className="mr-1 flex items-center gap-1 rounded-lg bg-white/10 px-2 py-1 text-[10px] uppercase tracking-wide text-neutral-300">
-              {(["far", "base", "near", "ultra"] as const).map((band) => (
-                <span
-                  key={band}
-                  className={`rounded px-1.5 py-0.5 transition-colors ${
-                    zoomBand === band ? "bg-white/20 text-white" : "text-neutral-400"
-                  }`}
-                >
-                  {band}
-                </span>
-              ))}
-            </div>
-            <label className="mr-1 flex items-center gap-2 text-xs text-neutral-200">
-              Rings
-              <input
-                type="number"
-                min={1}
-                max={9}
-                value={map.rings.length}
-                onChange={(event) => setRingCount(Number(event.target.value) || 1)}
-                className="w-14 rounded border border-neutral-600 bg-[#171717] px-1 py-1 text-neutral-100"
-              />
-            </label>
-            <ToolButton label="Add Node" onClick={addNode}>
-              <Plus size={16} />
-            </ToolButton>
-            <ToolButton label="Auto Layout" onClick={autoLayout}>
-              <Sparkles size={16} />
-            </ToolButton>
-            <ToolButton
-              label={connectionSourceId ? "Pick Target" : "Connect"}
-              onClick={startConnection}
-              disabled={!selectedNodeId}
-              active={Boolean(connectionSourceId)}
-            >
-              <Link2 size={16} />
-            </ToolButton>
-            <ToolButton label="Zoom In" onClick={() => zoomBy(0.1)}>
-              <ZoomIn size={16} />
-            </ToolButton>
-            <ToolButton label="Zoom Out" onClick={() => zoomBy(-0.1)}>
-              <ZoomOut size={16} />
-            </ToolButton>
-            <ToolButton label="Reset View" onClick={resetView}>
-              <LocateFixed size={16} />
-            </ToolButton>
+          <div className="pointer-events-auto fixed bottom-4 left-1/2 z-30 flex -translate-x-1/2 items-center gap-3">
+            {/* Dock toolbar */}
+            <Dock
+              items={[
+                { icon: Plus, label: "Add Node", onClick: addNode },
+                { icon: Grid2x2Check, label: "Auto Layout", onClick: autoLayout },
+                {
+                  icon: Link2,
+                  label: connectionSourceId ? "Pick Target" : "Connect",
+                  onClick: startConnection,
+                  disabled: !selectedNodeId,
+                  isActive: Boolean(connectionSourceId),
+                },
+                { icon: ZoomIn, label: "Zoom In", onClick: () => zoomBy(0.1) },
+                { icon: ZoomOut, label: "Zoom Out", onClick: () => zoomBy(-0.1) },
+                { icon: LocateFixed, label: "Reset View", onClick: resetView },
+              ]}
+            />
           </div>
         </div>
 
