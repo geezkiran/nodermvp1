@@ -151,7 +151,10 @@ function SingleSidebar({
   activeSection: SidebarSectionKey;
   onSectionChange: (value: SidebarSectionKey) => void;
 }) {
+  const minSidebarWidth = 260;
+  const maxSidebarWidth = 460;
   const [collapsed, setCollapsed] = useState(false);
+  const [sidebarWidth, setSidebarWidth] = useState(320);
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
   const sidebarRef = useRef<HTMLDivElement | null>(null);
   const content = useMemo(() => getSidebarContent(activeSection), [activeSection]);
@@ -185,13 +188,41 @@ function SingleSidebar({
     setExpandedRows((state) => ({ ...state, [key]: !state[key] }));
   };
 
+  const startResize = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (collapsed) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const startX = event.clientX;
+    const startWidth = sidebarWidth;
+
+    const handlePointerMove = (moveEvent: PointerEvent) => {
+      const next = startWidth + (moveEvent.clientX - startX);
+      const clamped = Math.max(minSidebarWidth, Math.min(maxSidebarWidth, next));
+      setSidebarWidth(clamped);
+    };
+
+    const handlePointerUp = () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+    };
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
+  };
+
   return (
     <div ref={sidebarRef} className="relative h-full">
       <aside
         className={`flex h-full flex-col rounded-2xl border border-white/10 bg-black/20 p-4 shadow-[0_20px_60px_rgba(0,0,0,0.45)] backdrop-blur-xl transition-all duration-300 ${
-          collapsed ? "w-16 px-3" : "w-80"
+          collapsed ? "w-16 px-3" : ""
         }`}
-        style={{ transitionTimingFunction: easing }}
+        style={{
+          width: collapsed ? 64 : sidebarWidth,
+          transitionTimingFunction: easing,
+        }}
       >
         <div
           className={`flex h-10 items-center ${collapsed ? "mb-10 justify-center" : "mb-5 justify-between"}`}
@@ -292,6 +323,16 @@ function SingleSidebar({
           </div>
         </div>
       </aside>
+
+      {!collapsed && (
+        <div
+          role="separator"
+          aria-orientation="vertical"
+          aria-label="Resize menu"
+          onPointerDown={startResize}
+          className="absolute inset-y-0 -right-2 z-30 w-3 cursor-col-resize"
+        />
+      )}
 
     </div>
   );

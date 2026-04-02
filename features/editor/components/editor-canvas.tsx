@@ -77,6 +77,8 @@ function ToolButton({
 }
 
 export function EditorCanvas() {
+  const minInspectorWidth = 280;
+  const maxInspectorWidth = 560;
   const canvasRef = useRef<HTMLDivElement | null>(null);
   const dragStateRef = useRef<{
     nodeId: string | null;
@@ -106,6 +108,7 @@ export function EditorCanvas() {
   const { viewport, zoomBand, panBy, zoomBy, resetView } = usePanZoom();
   const [isPanning, setIsPanning] = useState(false);
   const [inspectorCollapsed, setInspectorCollapsed] = useState(false);
+  const [inspectorWidth, setInspectorWidth] = useState(320);
 
   const zoomVisual = useMemo(
     () => getZoomVisualConfig(viewport.scale, zoomBand),
@@ -239,6 +242,27 @@ export function EditorCanvas() {
     if (connectionSourceId) {
       createConnectionTo(nodeId);
     }
+  };
+
+  const onInspectorResizeStart = (event: React.PointerEvent<HTMLDivElement>) => {
+    event.preventDefault();
+
+    const startX = event.clientX;
+    const startWidth = inspectorWidth;
+
+    const handlePointerMove = (moveEvent: PointerEvent) => {
+      const next = startWidth + (startX - moveEvent.clientX);
+      const clamped = Math.max(minInspectorWidth, Math.min(maxInspectorWidth, next));
+      setInspectorWidth(clamped);
+    };
+
+    const handlePointerUp = () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+    };
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
   };
 
   const renderConnection = (connection: OrbitConnection) => {
@@ -455,6 +479,8 @@ export function EditorCanvas() {
         <NodeInspector
           node={selectedNode}
           rings={map.rings}
+          width={inspectorWidth}
+          onResizeStart={onInspectorResizeStart}
           onUpdate={(nodeId, updates) => updateNode(nodeId, updates)}
           onAssignRing={assignNodeToRing}
           onDelete={deleteNode}

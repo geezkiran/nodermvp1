@@ -23,11 +23,14 @@ export function useEditorState() {
 
   useEffect(() => {
     const stored = loadMap();
-    if (stored) {
-      setMap(stored);
-    }
 
-    setHasHydrated(true);
+    queueMicrotask(() => {
+      if (stored) {
+        setMap(stored);
+      }
+
+      setHasHydrated(true);
+    });
   }, []);
 
   useEffect(() => {
